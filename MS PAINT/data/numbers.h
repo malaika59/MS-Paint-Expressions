@@ -1,0 +1,10 @@
+void one(int size, int outlinecolorChoice, char symbol, int position);
+void two(int size, int outlinecolorChoice, char symbol, int position);
+void three(int size, int outlinecolorChoice, char symbol, int position);
+void four(int size, int outlinecolorChoice, char symbol, int position);
+void five(int size, int outlinecolorChoice, char symbol, int position);
+void six(int size, int outlinecolorChoice, char symbol, int position);
+void seven(int size, int outlinecolorChoice, char symbol, int position);
+void eight(int size, int outlinecolorChoice, char symbol, int position);
+void nine(int size, int outlinecolorChoice, char symbol, int position);
+void zero(int size, int outlinecolorChoice, char symbol, int position);

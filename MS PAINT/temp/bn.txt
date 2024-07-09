@@ -1,0 +1,165 @@
+/* data/room.h */
+#ifndef ROOM_H_
+#define ROOM_H_
+
+typedef struct {
+    double length;
+    double width;
+    double height;
+} Room;
+
+double calculate_volume(Room room);
+int compare_params(Room room1, Room room2);
+int compare_volumes(Room room1, Room room2);
+
+#endif /* ROOM_H_ */
+
+
+/* data/room.c */
+#include "room.h"
+
+double calculate_volume(Room room) {
+    return room.length * room.width * room.height;
+}
+
+int compare_params(Room room1, Room room2) {
+    if (room1.length > room2.length && room1.width > room2.width && room1.height > room2.height) {
+        return 1; /* room1 is bigger */
+    }
+    else if (room2.length > room1.length && room2.width > room1.width && room2.height > room1.height) {
+        return 2; /* room2 is bigger */
+    }
+    else {
+        return 0; /* rooms are equal */
+    }
+}
+
+int compare_volumes(Room room1, Room room2) {
+    double vol1 = calculate_volume(room1);
+    double vol2 = calculate_volume(room2);
+    if (vol1 > vol2) {
+        return 1; /* room1 has bigger volume */
+    }
+    else if (vol2 > vol1) {
+        return 2; /* room2 has bigger volume */
+    }
+    else {
+        return 0; /* rooms have equal volumes */
+    }
+}
+
+
+/* brain/brain.h */
+#ifndef BRAIN_H_
+#define BRAIN_H_
+
+void option1();
+void option2();
+void read_file_values(Room *room);
+void assign_values(Room *room);
+
+#endif /* BRAIN_H_ */
+
+
+/* brain/brain.c */
+#include <stdio.h>
+#include <stdlib.h>
+#include "../data/room.h"
+#include "brain.h"
+
+void read_file_values(Room *room) {
+    FILE* fp = fopen("../room_param.txt", "r");
+    if (fp == NULL) {
+        perror("Failed to open file");
+        exit(EXIT_FAILURE);
+    }
+    fscanf(fp, "%lf %lf %lf", &room->length, &room->width, &room->height);
+    fclose(fp);
+}
+
+void assign_values(Room *room) {
+    printf("Enter length: ");
+    scanf("%lf", &room->length);
+    printf("Enter width: ");
+    scanf("%lf", &room->width);
+    printf("Enter height: ");
+    scanf("%lf", &room->height);
+}
+
+void option1() {
+    Room room1, room2;
+    printf("Enter parameters for room 1:\n");
+    assign_values(&room1);
+    printf("Enter parameters for room 2:\n");
+    assign_values(&room2);
+    int comparison = compare_volumes(room1, room2);
+    if (comparison == 1) {
+        printf("Room 1 has bigger volume\n");
+    }
+    else if (comparison == 2) {
+        printf("Room 2 has bigger volume\n");
+    }
+    else {
+        printf("Rooms have equal volumes\n");
+    }
+}
+
+void option2() {
+    Room user_room, file_room;
+    printf("Enter parameters for your room:\n");
+    assign_values(&user_room);
+    read_file_values(&file_room);
+    Room final_room = {
+        user_room.length > file_room.length ? user_room.length : file_room.length,
+        user_room.width > file_room.width ? user_room.width : file_room.width,
+        user_room.height > file_room.height ? user_room.height : file_room.height,
+    };
+    double volume = calculate_volume(final_room);
+    printf("Volume of your room is: %.2lf\n", volume);
+}
+
+
+/* interface/ui.h */
+#ifndef UI_H_
+#define UI_H_
+
+void take_user_input();
+
+#endif /* UI_H_ */
+
+
+/* interface/ui.c */
+#include <stdio.h>
+#include "brain.h"
+#include "ui.h"
+
+void take_user_input() {
+    int choice;
+    printf("Choose an option:\n");
+    printf("1. Find and compare volumes from user given parameters and parameters from file.\n");
+    printf("2. Compare user given length, width and height with those in .txt file and find volume of room using larger length, width & height.\n");
+    scanf("%d", &choice);
+    if (choice == 1) {
+        option1();
+    }
+    else if (choice == 2) {
+        option2();
+    }
+    else {
+        printf("Invalid option selected\n");
+    }
+}
+
+
+/* main.c */
+#include "interface/ui.h"
+
+int main() {
+    take_user_input();
+    return 0;
+}
+
+
+/* compile.sh */
+#!/bin/bash
+gcc -o program main.c interface/ui.c brain/brain.c data/room.c

@@ -1,0 +1,5 @@
+
+
+
+
+void changeTextColor(int color);

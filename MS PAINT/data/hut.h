@@ -1,0 +1,1 @@
+void filled_hut(int size, int outline_color_choice, char character, int position);
